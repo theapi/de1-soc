@@ -14,18 +14,6 @@ module DE1_SOC(
 	//////////// KEY //////////
 	input 		     [3:0]		KEY,
 
-	//////////// LED //////////
-	output		     [9:0]		LEDR,
-
-	//////////// PS2 //////////
-	inout 		          		PS2_CLK,
-	inout 		          		PS2_CLK2,
-	inout 		          		PS2_DAT,
-	inout 		          		PS2_DAT2,
-
-	//////////// SW //////////
-	input 		     [9:0]		SW,
-
 	//////////// VGA //////////
 	output		     [7:0]		VGA_B,
 	output		          		VGA_BLANK_N,
@@ -43,13 +31,35 @@ module DE1_SOC(
 //  REG/WIRE declarations
 //=======================================================
 
-
+wire clk_vga;
 
 
 //=======================================================
 //  Structural coding
 //=======================================================
 
+// If it is not required to encode sync
+// information onto the ADV7123, the SYNC input should be tied
+// to logic low. datasheet p.18
+assign VGA_SYNC_N = 1'b0;
+
+
+assign VGA_CLK = clk_vga;
+clock_25 clk_25 (
+    .CLOCK_50(CLOCK_50),
+    .CLOCK_25(clk_vga)
+);
+
+vga_demo vga_ins(
+    .CLOCK_PIXEL(VGA_CLK),
+    .RESET(!KEY[0]),
+    .VGA_RED(VGA_R),
+    .VGA_GREEN(VGA_G),
+    .VGA_BLUE(VGA_B),
+    .VGA_HS(VGA_HS),
+    .VGA_VS(VGA_VS),
+    .BLANK_N(VGA_BLANK_N)
+);
 
 
 endmodule
