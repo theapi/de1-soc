@@ -52,7 +52,7 @@ vga_pll vga_pll_inst(
     .rst(!KEY[0]), 
     .outclk_0(vga_clk_0), // 25 MHz
     .outclk_1(vga_clk_1), // 40 MHz
-    .outclk_2(vga_clk_2), // 33 MHz
+    .outclk_2(vga_clk_2) // 33 MHz
 );
 /*
 clock_25 clk_25 (

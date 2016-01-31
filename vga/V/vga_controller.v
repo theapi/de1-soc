@@ -14,11 +14,13 @@ module vga_controller(
     reg [7:0] r_red;
     reg [7:0] r_green;
     reg [7:0] r_blue;
+    wire visible;
 
     vga_sync_generator vga_sync(
         .reset(reset),
         .vga_clk(vga_clk),
         .blank_n(blank_n),
+        .visible(visible),
         .next_pixel_h(pixel_h),
         .next_pixel_v(pixel_v),
         .HS(HS),
@@ -28,7 +30,7 @@ module vga_controller(
 
     
     always@(posedge vga_clk) begin
-        if (!blank_n) begin
+        if (!visible) begin
             // black during blanking
             r_red <= 8'b0;
             r_green <= 8'b0;

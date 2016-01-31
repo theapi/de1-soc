@@ -2,6 +2,7 @@ module vga_sync_generator(
     input reset,
     input vga_clk,
     output reg blank_n,
+    output reg visible,
     output reg [10:0] next_pixel_h,
     output reg [10:0] next_pixel_v,
     output reg HS,
@@ -57,14 +58,18 @@ module vga_sync_generator(
     parameter V_sync_cycle = 2;
 */
     
-    parameter hori_visible  = 800;                           
+    parameter hori_sync = 88;
     parameter hori_back  = 47; 
+    parameter hori_visible  = 800;                           
     parameter hori_front = 40;
+    parameter hori_line = 975;
+    
+    parameter vert_sync = 3;
     parameter vert_visible  = 480;
     parameter vert_back  = 31;
     parameter vert_front = 13;
-    parameter H_sync = 88;
-    parameter V_sync = 3;
+    parameter vert_line = 527;
+    
     
     
 //=======================================================
@@ -72,18 +77,18 @@ module vga_sync_generator(
 //=======================================================
 
     reg [10:0] h_cnt;
-    reg [10:0]  v_cnt;
-    wire cHD,cVD,cDEN,hori_valid,vert_valid;
-    wire [10:0] hori_line;
-    wire [10:0] vert_line;
-
+    reg [10:0] v_cnt;
+    reg r_hori_valid /* synthesis noprune */; 
+    reg r_vert_valid /* synthesis noprune */; 
+    wire hori_valid, vert_valid;
+    wire h_sync;
+    wire v_sync;
+    wire blank;
 
 //=======================================================
 //  Structural coding
 //=======================================================
 
-    assign hori_line = hori_back + hori_visible + hori_front;
-    assign vert_line = vert_back + vert_visible + vert_front;
 
     // Count the pixels including those in porches.
     always@(negedge vga_clk, posedge reset) begin
@@ -106,35 +111,47 @@ module vga_sync_generator(
     always@(negedge vga_clk, posedge reset) begin
         if (reset) begin
             next_pixel_h <= 11'd0;
-            next_pixel_v <= 11'd0;
-        end else if (cDEN) begin // Active part of the screen
+        end else if (hori_valid) begin // Active part of the screen
             if (next_pixel_h == hori_visible) begin
                 next_pixel_h <= 11'd0;
-                if (next_pixel_v == vert_visible) begin
-                    next_pixel_v <= 11'd0;
-                end else begin
-                    next_pixel_v <= next_pixel_v + 11'd1;
-                end
             end else begin
                 next_pixel_h <= next_pixel_h + 11'd1;
             end
         end
     end
+    
+    always@(negedge vga_clk, posedge reset) begin
+        if (reset) begin
+            next_pixel_v <= 11'd0;
+        end else if (vert_valid && next_pixel_h == hori_visible) begin // Active part of the screen
+            if (next_pixel_v == vert_visible) begin
+                next_pixel_v <= 11'd0;
+            end else begin
+                next_pixel_v <= next_pixel_v + 11'd1;
+            end
+        end
+    end
 
     // Sync pulses
-    assign cHD = (h_cnt < H_sync) ? 1'b0 : 1'b1;
-    assign cVD = (v_cnt < V_sync) ? 1'b0 : 1'b1;
+    assign h_sync = (h_cnt < hori_sync) ? 1'b1 : 1'b0;
+    assign v_sync = (v_cnt < vert_sync) ? 1'b1 : 1'b0;
+    assign blank = h_sync || v_sync;
 
     // Valid when not in the porches.
-    assign hori_valid = (h_cnt > (H_sync + hori_back) && h_cnt < hori_front) ? 1'b1 : 1'b0;
-    assign vert_valid = (v_cnt > (V_sync + vert_back) && v_cnt < vert_front) ? 1'b1 : 1'b0;
-
-    assign cDEN = hori_valid && vert_valid;
+    assign hori_valid = (h_cnt > (hori_sync + hori_back) && h_cnt < (hori_sync + hori_back + hori_visible)) ? 1'b1 : 1'b0;
+    assign vert_valid = (v_cnt > (vert_sync + vert_back) && v_cnt < (vert_sync + vert_back + vert_visible)) ? 1'b1 : 1'b0;
+    // for signaltap
+    always@(negedge vga_clk) begin
+        r_hori_valid <= hori_valid;
+        r_vert_valid <= vert_valid;
+    end
+    
 
     always@(negedge vga_clk) begin
-        HS <= cHD;
-        VS <= cVD;
-        blank_n <= cDEN;
+        HS <= h_sync;
+        VS <= v_sync;
+        blank_n <= !blank;
+        visible <= hori_valid && vert_valid;
     end
 
 endmodule
