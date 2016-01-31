@@ -50,6 +50,7 @@ clock_25 clk_25 (
     .CLOCK_25(clk_vga)
 );
 
+
 vga_demo vga_ins(
     .CLOCK_PIXEL(VGA_CLK),
     .RESET(!KEY[0]),
@@ -61,5 +62,16 @@ vga_demo vga_ins(
     .BLANK_N(VGA_BLANK_N)
 );
 
-
+/*
+vga_controller vga_ins(
+    .reset(!KEY[0]),
+    .vga_clk(VGA_CLK),
+    .blank_n(VGA_BLANK_N),
+    .HS(VGA_HS),
+    .VS(VGA_VS),
+    .red(VGA_R),
+    .green(VGA_G),
+    .blue(VGA_B)
+);
+*/
 endmodule

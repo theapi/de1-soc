@@ -125,7 +125,7 @@ module vga_demo
                 else begin
                     red <= 8'b0;
                     green <= 8'b0;
-                    blue <= 8'b0111_1111;
+                    blue <= 8'b1111_1111;
                 end
                 
 
