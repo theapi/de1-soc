@@ -18,12 +18,13 @@ module vga_sync_generator(
 
 --___________   _____________________   ______________________
 --           |_|                     |_|
---            B <-C-><----D----><-E->
+--            B 
+--              <-C-><----D----><-E->
 --           <------------A--------->
 --The Unit used below are pixels;  
---  B->Sync_cycle                   :H_sync_cycle
---  C->Back_porch                   :hori_back
---  D->Visable Area
+--  B->Sync                         :H_sync
+--  C->Back_porch                   :hori_back 
+--  D->Visable Area                 :hori_visible
 --  E->Front porch                  :hori_front
 --  A->horizontal line total length :hori_line
 --Vertical :
@@ -33,12 +34,13 @@ module vga_sync_generator(
 --
 --__________   _____________________   ______________________
 --          |_|                     |_|
---           P <-Q-><----R----><-S->
+--           P 
+--             <-Q-><----R----><-S->
 --          <-----------O---------->
 --The Unit used below are horizontal lines;  
---  P->Sync_cycle                   :V_sync_cycle
---  Q->Back_porch                   :vert_back
---  R->Visable Area
+--  P->Sync                         :V_sync
+--  Q->Back_porch                   :vert_back 
+--  R->Visable Area                 :vert_visible
 --  S->Front porch                  :vert_front
 --  O->vertical line total length :vert_line
 */
@@ -55,14 +57,14 @@ module vga_sync_generator(
     parameter V_sync_cycle = 2;
 */
     
-    parameter hori_line  = 800;                           
-    parameter hori_back  = 46; 
-    parameter hori_front = 16;
-    parameter vert_line  = 480;
-    parameter vert_back  = 23;
-    parameter vert_front = 7;
-    parameter H_pulse_width = 3;
-    parameter V_pulse_width = 3;
+    parameter hori_visible  = 800;                           
+    parameter hori_back  = 47; 
+    parameter hori_front = 40;
+    parameter vert_visible  = 480;
+    parameter vert_back  = 31;
+    parameter vert_front = 13;
+    parameter H_sync = 88;
+    parameter V_sync = 3;
     
     
 //=======================================================
@@ -70,23 +72,29 @@ module vga_sync_generator(
 //=======================================================
 
     reg [10:0] h_cnt;
-    reg [9:0]  v_cnt;
+    reg [10:0]  v_cnt;
     wire cHD,cVD,cDEN,hori_valid,vert_valid;
+    wire [10:0] hori_line;
+    wire [10:0] vert_line;
 
 
 //=======================================================
 //  Structural coding
 //=======================================================
 
+    assign hori_line = hori_back + hori_visible + hori_front;
+    assign vert_line = vert_back + vert_visible + vert_front;
+
+    // Count the pixels including those in porches.
     always@(negedge vga_clk, posedge reset) begin
         if (reset) begin
             h_cnt <= 11'd0;
-            v_cnt <= 10'd0;
+            v_cnt <= 11'd0;
         end else begin
             if (h_cnt == hori_line - 1) begin 
                 h_cnt <= 11'd0;
             if (v_cnt == vert_line - 1)
-                v_cnt <= 10'd0;
+                v_cnt <= 11'd0;
             else
                 v_cnt <= v_cnt + 1;
         end else
@@ -100,9 +108,9 @@ module vga_sync_generator(
             next_pixel_h <= 11'd0;
             next_pixel_v <= 11'd0;
         end else if (cDEN) begin // Active part of the screen
-            if (next_pixel_h == hori_line) begin
+            if (next_pixel_h == hori_visible) begin
                 next_pixel_h <= 11'd0;
-                if (next_pixel_v == vert_line) begin
+                if (next_pixel_v == vert_visible) begin
                     next_pixel_v <= 11'd0;
                 end else begin
                     next_pixel_v <= next_pixel_v + 11'd1;
@@ -113,12 +121,13 @@ module vga_sync_generator(
         end
     end
 
+    // Sync pulses
+    assign cHD = (h_cnt < H_sync) ? 1'b0 : 1'b1;
+    assign cVD = (v_cnt < V_sync) ? 1'b0 : 1'b1;
 
-    assign cHD = (h_cnt < H_pulse_width) ? 1'b0 : 1'b1;
-    assign cVD = (v_cnt < V_pulse_width) ? 1'b0 : 1'b1;
-
-    assign hori_valid = (h_cnt < (hori_line - hori_front) && h_cnt >= hori_back) ? 1'b1 : 1'b0;
-    assign vert_valid = (v_cnt < (vert_line - vert_front) && v_cnt >= vert_back) ? 1'b1 : 1'b0;
+    // Valid when not in the porches.
+    assign hori_valid = (h_cnt > (H_sync + hori_back) && h_cnt < hori_front) ? 1'b1 : 1'b0;
+    assign vert_valid = (v_cnt > (V_sync + vert_back) && v_cnt < vert_front) ? 1'b1 : 1'b0;
 
     assign cDEN = hori_valid && vert_valid;
 

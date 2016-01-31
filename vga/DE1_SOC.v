@@ -32,7 +32,7 @@ module DE1_SOC(
 //=======================================================
 
 wire clk_vga;
-
+wire vga_clk_0, vga_clk_1, vga_clk_2;
 
 //=======================================================
 //  Structural coding
@@ -44,13 +44,23 @@ wire clk_vga;
 assign VGA_SYNC_N = 1'b0;
 
 
-assign VGA_CLK = clk_vga;
+assign VGA_CLK = vga_clk_0;
+
+
+vga_pll vga_pll_inst(
+    .refclk(CLOCK_50),
+    .rst(!KEY[0]), 
+    .outclk_0(vga_clk_0), // 25 MHz
+    .outclk_1(vga_clk_1), // 40 MHz
+    .outclk_2(vga_clk_2), // 33 MHz
+);
+/*
 clock_25 clk_25 (
     .CLOCK_50(CLOCK_50),
     .CLOCK_25(clk_vga)
 );
-
-
+*/
+/*
 vga_demo vga_ins(
     .CLOCK_PIXEL(VGA_CLK),
     .RESET(!KEY[0]),
@@ -61,8 +71,8 @@ vga_demo vga_ins(
     .VGA_VS(VGA_VS),
     .BLANK_N(VGA_BLANK_N)
 );
+*/
 
-/*
 vga_controller vga_ins(
     .reset(!KEY[0]),
     .vga_clk(VGA_CLK),
@@ -73,5 +83,5 @@ vga_controller vga_ins(
     .green(VGA_G),
     .blue(VGA_B)
 );
-*/
+
 endmodule
