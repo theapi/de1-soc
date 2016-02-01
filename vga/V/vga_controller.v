@@ -20,7 +20,6 @@ module vga_controller(
         .reset(reset),
         .vga_clk(vga_clk),
         .blank_n(blank_n),
-        .visible(visible),
         .next_pixel_h(pixel_h),
         .next_pixel_v(pixel_v),
         .HS(HS),
@@ -30,7 +29,7 @@ module vga_controller(
 
     
     always@(posedge vga_clk) begin
-        if (!visible) begin
+        if (!blank_n) begin
             // black during blanking
             r_red <= 8'b0;
             r_green <= 8'b0;

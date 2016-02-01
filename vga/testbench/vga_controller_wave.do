@@ -10,9 +10,12 @@ add wave -noupdate -radix unsigned /vga_controller_tb/vga_ins/pixel_v
 add wave -noupdate -radix hexadecimal /vga_controller_tb/vga_ins/red
 add wave -noupdate -radix hexadecimal /vga_controller_tb/vga_ins/green
 add wave -noupdate -radix unsigned /vga_controller_tb/vga_ins/blue
-add wave -noupdate /vga_controller_tb/vga_ins/visible
+add wave -noupdate /vga_controller_tb/vga_ins/vga_sync/hori_valid
+add wave -noupdate /vga_controller_tb/vga_ins/vga_sync/vert_valid
+add wave -noupdate -radix unsigned /vga_controller_tb/vga_ins/vga_sync/h_cnt
+add wave -noupdate -radix unsigned /vga_controller_tb/vga_ins/vga_sync/v_cnt
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {17730 ns} 0}
+WaveRestoreCursors {{Cursor 1} {2618080 ns} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 176
 configure wave -valuecolwidth 100
@@ -28,4 +31,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ns} {12600 us}
+WaveRestoreZoom {2492710 ns} {2738810 ns}
