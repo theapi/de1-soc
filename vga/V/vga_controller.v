@@ -14,7 +14,6 @@ module vga_controller(
     reg [7:0] r_red;
     reg [7:0] r_green;
     reg [7:0] r_blue;
-    wire visible;
 
     vga_sync_generator vga_sync(
         .reset(reset),
@@ -27,24 +26,21 @@ module vga_controller(
     );
     
 
-    
     always@(posedge vga_clk) begin
-        if (!blank_n) begin
-            // black during blanking
-            r_red <= 8'b0;
-            r_green <= 8'b0;
-            r_blue <= 8'b0;
-        end else begin
+        // Only set pixel colours when in the visible display area.
+        if (blank_n) begin
             // Draw a single square.
             if (pixel_h >= 100 && pixel_h <= 200 && pixel_v >= 100 && pixel_v <= 200) begin
-                r_red <= 8'b1111_1111;
-                r_green <= 8'b0;
-                r_blue <= 8'b0;
+                // #FF4500
+                r_red   <= 8'hFF;
+                r_green <= 8'h45;
+                r_blue  <= 8'h0;
             end 
             else begin
-                r_red <= 8'b0;
-                r_green <= 8'b0;
-                r_blue <= 8'b1111_1111;
+                // #228B22
+                r_red   <= 8'h22;
+                r_green <= 8'h8B;
+                r_blue  <= 8'h22;
             end
         end
     end

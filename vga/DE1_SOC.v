@@ -32,7 +32,7 @@ module DE1_SOC(
 //=======================================================
 
 wire clk_vga;
-wire vga_clk_0, vga_clk_1, vga_clk_2;
+//wire vga_clk_0, vga_clk_1, vga_clk_2;
 
 //=======================================================
 //  Structural coding
@@ -43,10 +43,8 @@ wire vga_clk_0, vga_clk_1, vga_clk_2;
 // to logic low. datasheet p.18
 assign VGA_SYNC_N = 1'b0;
 
-
+/*
 assign VGA_CLK = vga_clk_0;
-
-
 vga_pll vga_pll_inst(
     .refclk(CLOCK_50),
     .rst(!KEY[0]), 
@@ -54,12 +52,14 @@ vga_pll vga_pll_inst(
     .outclk_1(vga_clk_1), // 40 MHz
     .outclk_2(vga_clk_2) // 33 MHz
 );
-/*
+*/
+
+assign VGA_CLK = clk_vga;
 clock_25 clk_25 (
     .CLOCK_50(CLOCK_50),
     .CLOCK_25(clk_vga)
 );
-*/
+
 /*
 vga_demo vga_ins(
     .CLOCK_PIXEL(VGA_CLK),

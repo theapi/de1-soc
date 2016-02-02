@@ -64,8 +64,6 @@ module vga_sync_generator(
 
     reg [10:0] h_cnt;
     reg [10:0] v_cnt;
-    reg r_hori_valid /* synthesis noprune */; 
-    reg r_vert_valid /* synthesis noprune */; 
     wire hori_valid, vert_valid;
     wire h_sync;
     wire v_sync;
@@ -92,9 +90,9 @@ module vga_sync_generator(
             if (v_cnt == vert_line - 1)
                 v_cnt <= 11'd0;
             else
-                v_cnt <= v_cnt + 1;
+                v_cnt <= v_cnt + 11'd1;
         end else
-             h_cnt <= h_cnt + 1;
+             h_cnt <= h_cnt + 11'd1;
         end
     end
 
@@ -132,17 +130,9 @@ module vga_sync_generator(
     assign HS = (h_cnt < hori_sync) ? 1'b1 : 1'b0;
     assign VS = (v_cnt < vert_sync) ? 1'b1 : 1'b0;
     
-
     // Valid when not in the porches.
     assign hori_valid = (h_cnt > (hori_sync + hori_back) && h_cnt <= (hori_sync + hori_back + hori_visible + 1)) ? 1'b1 : 1'b0;
-    assign vert_valid = (v_cnt > (vert_sync + vert_back) && v_cnt <= (vert_sync + vert_back + vert_visible + 1)) ? 1'b1 : 1'b0;
-    
-    // for signaltap
-    always@(negedge vga_clk) begin
-        r_hori_valid <= hori_valid;
-        r_vert_valid <= vert_valid;
-    end
-    
+    assign vert_valid = (v_cnt > (vert_sync + vert_back) && v_cnt <= (vert_sync + vert_back + vert_visible + 1)) ? 1'b1 : 1'b0; 
     assign blank_n = !(!hori_valid || !vert_valid);
     
 
