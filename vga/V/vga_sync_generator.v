@@ -1,11 +1,11 @@
 module vga_sync_generator(
     input reset,
     input vga_clk,
-    output reg blank_n,
+    output blank_n,
     output reg [10:0] next_pixel_h,
     output reg [10:0] next_pixel_v,
-    output reg HS,
-    output reg VS
+    output HS,
+    output VS
 );
 
 
@@ -45,32 +45,19 @@ module vga_sync_generator(
 --  O->vertical line total length :vert_line
 */
 
-    //parameter
-    /*
-    parameter hori_line  = 800;                           
-    parameter hori_back  = 144;
-    parameter hori_front = 16;
-    parameter vert_line  = 525;
-    parameter vert_back  = 34;
-    parameter vert_front = 11;
-    parameter H_sync_cycle = 96;
-    parameter V_sync_cycle = 2;
-*/
     
     parameter hori_sync = 88;
     parameter hori_back  = 47; 
     parameter hori_visible  = 800;                           
     parameter hori_front = 40;
-    parameter hori_line = 975;
+
     
     parameter vert_sync = 3;
     parameter vert_visible  = 480;
     parameter vert_back  = 31;
     parameter vert_front = 13;
-    parameter vert_line = 527;
-    
-    
-    
+
+
 //=======================================================
 //  REG/WIRE declarations
 //=======================================================
@@ -82,12 +69,17 @@ module vga_sync_generator(
     wire hori_valid, vert_valid;
     wire h_sync;
     wire v_sync;
-    wire blank;
+
+    wire [32:0] vert_line;
+    wire [32:0] hori_line;
+    
 
 //=======================================================
 //  Structural coding
 //=======================================================
 
+    assign vert_line = vert_sync + vert_back + vert_visible + vert_front;
+    assign hori_line = hori_sync + hori_back + hori_visible + hori_front;
 
     // Count the pixels including those in porches.
     always@(negedge vga_clk, posedge reset) begin
@@ -113,7 +105,6 @@ module vga_sync_generator(
         end else if (h_cnt == 0) begin 
             next_pixel_h <= 11'd0;
         end else if (hori_valid) begin 
-        
             if (next_pixel_h == hori_visible) begin
                 next_pixel_h <= 11'd0;
             end else begin
@@ -138,27 +129,22 @@ module vga_sync_generator(
     
 
     // Sync pulses
-    assign h_sync = (h_cnt < hori_sync) ? 1'b1 : 1'b0;
-    assign v_sync = (v_cnt < vert_sync) ? 1'b1 : 1'b0;
+    assign HS = (h_cnt < hori_sync) ? 1'b1 : 1'b0;
+    assign VS = (v_cnt < vert_sync) ? 1'b1 : 1'b0;
     
 
     // Valid when not in the porches.
-    assign hori_valid = (h_cnt > (hori_sync + hori_back) && h_cnt < (hori_sync + hori_back + hori_visible)) ? 1'b1 : 1'b0;
-    assign vert_valid = (v_cnt > (vert_sync + vert_back) && v_cnt < (vert_sync + vert_back + vert_visible)) ? 1'b1 : 1'b0;
+    assign hori_valid = (h_cnt > (hori_sync + hori_back) && h_cnt <= (hori_sync + hori_back + hori_visible + 1)) ? 1'b1 : 1'b0;
+    assign vert_valid = (v_cnt > (vert_sync + vert_back) && v_cnt <= (vert_sync + vert_back + vert_visible + 1)) ? 1'b1 : 1'b0;
+    
     // for signaltap
     always@(negedge vga_clk) begin
         r_hori_valid <= hori_valid;
         r_vert_valid <= vert_valid;
     end
     
-    assign blank = !hori_valid || !vert_valid;
+    assign blank_n = !(!hori_valid || !vert_valid);
     
-
-    always@(negedge vga_clk) begin
-        HS <= h_sync;
-        VS <= v_sync;
-        blank_n <= !blank;
-    end
 
 endmodule
 
