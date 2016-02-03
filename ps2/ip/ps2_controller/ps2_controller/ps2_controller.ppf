@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pinplan
+ variation_name="ps2_0"
+ megafunction_name="ALTERA_UP_AVALON_PS2"
+ intended_family="Cyclone V"
+ specifies="all_ports">
+ <global>
+  <pin name="clk" direction="input" scope="external" />
+  <pin name="reset" direction="input" scope="external" />
+  <pin name="command[7..0]" direction="input" scope="external" />
+  <pin name="command_valid" direction="input" scope="external" />
+  <pin name="command_ready" direction="output" scope="external" />
+  <pin name="data_ready" direction="input" scope="external" />
+  <pin name="data[7..0]" direction="output" scope="external" />
+  <pin name="data_valid" direction="output" scope="external" />
+  <pin name="PS2_CLK" direction="bidir" scope="external" />
+  <pin name="PS2_DAT" direction="bidir" scope="external" />
+ </global>
+</pinplan>

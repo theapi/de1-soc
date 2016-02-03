@@ -10,6 +10,9 @@ module DE1_SOC(
 	input 		          		CLOCK2_50,
 	input 		          		CLOCK3_50,
 	input 		          		CLOCK4_50,
+    
+    //////////// KEY //////////
+	input 		     [3:0]		KEY,
 
 	//////////// LED //////////
 	output		     [9:0]		LEDR,
@@ -28,12 +31,45 @@ module DE1_SOC(
 //=======================================================
 
 
+reg [7:0] command;
+reg command_valid;
+reg command_ready;
+reg data_ready = 1'b1;
+reg [7:0] data;
+reg data_valid;
 
 
 //=======================================================
 //  Structural coding
 //=======================================================
 
+assign LEDR = data;
 
+ps2_controller ps2_controller_inst (
+    .command(command),
+    .command_valid(command_valid),
+    .command_ready(command_ready),
+    .data_ready(data_ready),
+    .data(data),
+    .data_valid(data_valid),
+    .clk(CLOCK_50),
+    .PS2_CLK(PS2_CLK),
+    .PS2_DAT(PS2_DAT),
+    .reset(!KEY[0])
+);
 
+/*
+module ps2_controller (
+		input  wire [7:0] command,       // avalon_ps2_command_sink.data
+		input  wire       command_valid, //                        .valid
+		output wire       command_ready, //                        .ready
+		input  wire       data_ready,    //  avalon_ps2_data_source.ready
+		output wire [7:0] data,          //                        .data
+		output wire       data_valid,    //                        .valid
+		input  wire       clk,           //                     clk.clk
+		inout  wire       PS2_CLK,       //      external_interface.CLK
+		inout  wire       PS2_DAT,       //                        .DAT
+		input  wire       reset          //                   reset.reset
+	);
+*/
 endmodule

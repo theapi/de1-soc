@@ -1,0 +1,15 @@
+	component ps2_controller is
+		port (
+			command       : in    std_logic_vector(7 downto 0) := (others => 'X'); -- data
+			command_valid : in    std_logic                    := 'X';             -- valid
+			command_ready : out   std_logic;                                       -- ready
+			data_ready    : in    std_logic                    := 'X';             -- ready
+			data          : out   std_logic_vector(7 downto 0);                    -- data
+			data_valid    : out   std_logic;                                       -- valid
+			clk           : in    std_logic                    := 'X';             -- clk
+			PS2_CLK       : inout std_logic                    := 'X';             -- CLK
+			PS2_DAT       : inout std_logic                    := 'X';             -- DAT
+			reset         : in    std_logic                    := 'X'              -- reset
+		);
+	end component ps2_controller;
+
