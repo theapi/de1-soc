@@ -30,46 +30,22 @@ module DE1_SOC(
 //  REG/WIRE declarations
 //=======================================================
 
-
-reg [7:0] command;
-reg command_valid;
-reg command_ready;
-reg data_ready = 1'b1;
-reg [7:0] data;
-reg data_valid;
-
+wire scan_ready;
+wire [7:0] scan_code;
 
 //=======================================================
 //  Structural coding
 //=======================================================
 
-assign LEDR = data;
+assign LEDR = scan_code;
 
-ps2_controller ps2_controller_inst (
-    .command(command),
-    .command_valid(command_valid),
-    .command_ready(command_ready),
-    .data_ready(data_ready),
-    .data(data),
-    .data_valid(data_valid),
-    .clk(CLOCK_50),
-    .PS2_CLK(PS2_CLK),
-    .PS2_DAT(PS2_DAT),
-    .reset(!KEY[0])
+ps2_controller keyboard (
+    .reset(!KEY[0]),
+    .i_clock(PS2_CLK),
+    .i_data(PS2_DAT),
+    .scan_ready(scan_ready),
+    .scan_code(scan_code)
 );
 
-/*
-module ps2_controller (
-		input  wire [7:0] command,       // avalon_ps2_command_sink.data
-		input  wire       command_valid, //                        .valid
-		output wire       command_ready, //                        .ready
-		input  wire       data_ready,    //  avalon_ps2_data_source.ready
-		output wire [7:0] data,          //                        .data
-		output wire       data_valid,    //                        .valid
-		input  wire       clk,           //                     clk.clk
-		inout  wire       PS2_CLK,       //      external_interface.CLK
-		inout  wire       PS2_DAT,       //                        .DAT
-		input  wire       reset          //                   reset.reset
-	);
-*/
+
 endmodule
