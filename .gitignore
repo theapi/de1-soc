@@ -6,6 +6,7 @@
 *.summary
 *.sld
 *.smsg
+*.cdf
 *.sof
 
 c5_pin_model_dump.txt
