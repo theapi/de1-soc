@@ -41,8 +41,9 @@ assign LEDR = scan_code;
 
 ps2_controller keyboard (
     .reset(!KEY[0]),
-    .i_clock(PS2_CLK),
-    .i_data(PS2_DAT),
+    .clk(CLOCK_50),
+    .ps2_clock(PS2_CLK),
+    .ps2_data(PS2_DAT),
     .scan_ready(scan_ready),
     .scan_code(scan_code)
 );
