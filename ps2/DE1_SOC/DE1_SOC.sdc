@@ -11,7 +11,6 @@ create_clock -period 20.000ns [get_ports CLOCK2_50]
 create_clock -period 20.000ns [get_ports CLOCK3_50]
 create_clock -period 20.000ns [get_ports CLOCK4_50]
 
-create_clock -name {PS2_CLK} -period 80.000 -waveform { 0.000 40.000 } [get_ports {PS2_CLK}]
 
 # for enhancing USB BlasterII to be reliable, 25MHz
 #create_clock -name {altera_reserved_tck} -period 40 {altera_reserved_tck}
@@ -60,7 +59,8 @@ derive_clock_uncertainty
 #**************************************************************
 # Set False Path
 #**************************************************************
-
+# LED output path
+set_false_path -from * -to [get_ports LED*]
 
 
 #**************************************************************
