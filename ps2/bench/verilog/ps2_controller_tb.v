@@ -24,7 +24,7 @@ module ps2_controller_tb();
         ps2_clock = 1;
         
         // 8'h1e: r_ascii <= 8'd50;  // 2
-        // 8'b0_0001_1110_0_1
+        // 1_1_0001_1110_0 least significant bit first
         #2 ps2_data = 1'b0;
         #1 ps2_clock = 0;
         #1 ps2_clock = 1;
@@ -33,16 +33,6 @@ module ps2_controller_tb();
         #2 ps2_data = 1'b0;
         #1 ps2_clock = 0;
         #1 ps2_clock = 1;
-        #2 ps2_data = 1'b0;
-        #1 ps2_clock = 0;
-        #1 ps2_clock = 1;
-        #2 ps2_data = 1'b0;
-        #1 ps2_clock = 0;
-        #1 ps2_clock = 1;
-        #2 ps2_data = 1'b1;
-        #1 ps2_clock = 0;
-        #1 ps2_clock = 1;
-        
         #2 ps2_data = 1'b1;
         #1 ps2_clock = 0;
         #1 ps2_clock = 1;
@@ -52,12 +42,22 @@ module ps2_controller_tb();
         #2 ps2_data = 1'b1;
         #1 ps2_clock = 0;
         #1 ps2_clock = 1;
+        
+        #2 ps2_data = 1'b1;
+        #1 ps2_clock = 0;
+        #1 ps2_clock = 1;
+        #2 ps2_data = 1'b0;
+        #1 ps2_clock = 0;
+        #1 ps2_clock = 1;
+        #2 ps2_data = 1'b0;
+        #1 ps2_clock = 0;
+        #1 ps2_clock = 1;
         #2 ps2_data = 1'b0;
         #1 ps2_clock = 0;
         #1 ps2_clock = 1;
         
         
-        #2 ps2_data = 1'b0;
+        #2 ps2_data = 1'b1;
         #1 ps2_clock = 0;
         #1 ps2_clock = 1;
         

@@ -36,6 +36,10 @@ module ps2_controller (
             state_reg <= 4'b0;
             r_scan_code <= 8'b0;
         end 
+        else if (ready) begin
+            // Ensure ready flag is only one system clock.
+            ready <= 1'b0;
+        end
         else if (ps2_clock_negedge) begin 
             
             case (state_reg)
