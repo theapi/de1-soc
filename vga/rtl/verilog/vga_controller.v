@@ -1,5 +1,6 @@
 module vga_controller(
     input reset,
+    input sys_clk,
     input vga_clk,
     output blank_n,
     output HS,
@@ -17,7 +18,7 @@ module vga_controller(
     
     wire [7:0] colour_index;
     wire [23:0] rgb;
-    wire [18:0] img_read_address;
+    reg [18:0] img_read_address;
 
     vga_sync_generator vga_sync(
         .reset(reset),
@@ -29,15 +30,15 @@ module vga_controller(
         .VS(VS)
     );
     
-
-    // Imgage data
+    
+    // Image data
     img_data img_data_inst (
         .q (colour_index),
         .d(24'b0),
         .read_address(img_read_address),
         .write_address(8'b0),
         .we(1'b0),
-        .clk(vga_clk)
+        .clk(sys_clk)
     );
     
     // Color table output
@@ -47,10 +48,12 @@ module vga_controller(
         .read_address(colour_index),
         .write_address(8'b0),
         .we(1'b0),
-        .clk(vga_clk)
+        .clk(sys_clk)
     );
     
-    assign img_read_address = (pixel_h * 800) + pixel_v;
+    always@(posedge vga_clk) begin
+        img_read_address <= (pixel_v * 800) + pixel_h;
+    end
 
     
     assign red   = rgb[23:16];

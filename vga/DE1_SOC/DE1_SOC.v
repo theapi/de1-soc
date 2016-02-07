@@ -75,6 +75,7 @@ vga_demo vga_ins(
 
 vga_controller vga_ins(
     .reset(!KEY[0]),
+    .sys_clk(CLOCK_50),
     .vga_clk(VGA_CLK),
     .blank_n(VGA_BLANK_N),
     .HS(VGA_HS),

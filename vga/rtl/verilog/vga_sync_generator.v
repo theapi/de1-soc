@@ -80,7 +80,7 @@ module vga_sync_generator(
     assign hori_line = hori_sync + hori_back + hori_visible + hori_front;
 
     // Count the pixels including those in porches.
-    always@(negedge vga_clk, posedge reset) begin
+    always@(posedge vga_clk, posedge reset) begin
         if (reset) begin
             h_cnt <= 11'd0;
             v_cnt <= 11'd0;
@@ -97,7 +97,7 @@ module vga_sync_generator(
     end
 
     // Next pixel values.
-    always@(negedge vga_clk, posedge reset) begin
+    always@(posedge vga_clk, posedge reset) begin
         if (reset) begin
             next_pixel_h <= 11'd0;
         end else if (h_cnt == 0) begin 
@@ -111,7 +111,7 @@ module vga_sync_generator(
         end
     end
     
-    always@(negedge vga_clk, posedge reset) begin
+    always@(posedge vga_clk, posedge reset) begin
         if (reset) begin
             next_pixel_v <= 11'd0;
         end else if (v_cnt == 0) begin 

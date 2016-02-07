@@ -15,7 +15,8 @@ module img_index (
 );
     
     (* ramstyle = "M10K" *)
-    reg [23:0] mem [255:0] /* synthesis ram_init_file = "heart_index.mif" */;
+    reg [23:0] mem [255:0] /* synthesis ram_init_file = "index_logo.mif" */;
+    //reg [23:0] mem [255:0] /* synthesis ram_init_file = "heart_index.mif" */;
     
     always @ (posedge clk) begin
         if (we)
