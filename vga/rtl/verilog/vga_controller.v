@@ -14,6 +14,10 @@ module vga_controller(
     reg [7:0] r_red;
     reg [7:0] r_green;
     reg [7:0] r_blue;
+    
+    wire [7:0] colour_index;
+    wire [23:0] rgb;
+    wire [18:0] img_read_address;
 
     vga_sync_generator vga_sync(
         .reset(reset),
@@ -26,6 +30,34 @@ module vga_controller(
     );
     
 
+    // Imgage data
+    img_data img_data_inst (
+        .q (colour_index),
+        .d(24'b0),
+        .read_address(img_read_address),
+        .write_address(8'b0),
+        .we(1'b0),
+        .clk(vga_clk)
+    );
+    
+    // Color table output
+    img_index img_index_inst (
+        .q (rgb),
+        .d(24'b0),
+        .read_address(colour_index),
+        .write_address(8'b0),
+        .we(1'b0),
+        .clk(vga_clk)
+    );
+    
+    assign img_read_address = (pixel_h * 800) + pixel_v;
+
+    
+    assign red   = rgb[23:16];
+    assign green = rgb[15:8];
+    assign blue  = rgb[7:0];
+    
+    /*
     always@(posedge vga_clk) begin
         // Only set pixel colours when in the visible display area.
         if (blank_n) begin
@@ -48,6 +80,7 @@ module vga_controller(
     assign red   = r_red;
     assign green = r_green;
     assign blue  = r_blue;
+    */
     
 endmodule
     

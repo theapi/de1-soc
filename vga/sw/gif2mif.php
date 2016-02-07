@@ -31,7 +31,7 @@ WIDTH = 24;
 DEPTH = 256;
 
 ADDRESS_RADIX = UNS;
-DATA_RADIX = HEX;
+DATA_RADIX = UNS;
 
 CONTENT BEGIN
 ';
@@ -78,8 +78,9 @@ for ($x = 0; $x < $width; $x++) {
 }
 
 if ($i < 384000) {
-    write($fp, '[' . $i . '..384000] : 000000;' . "\n");
+    write($fp, '[' . $i . '..383999] : 000000;' . "\n");
 }
+write($fp, "END;\n");
 
 // Free image
 imagedestroy($im);
