@@ -9,6 +9,8 @@
 *.cdf
 *.sof
 
+.idea/
+
 c5_pin_model_dump.txt
 
 # ignore Quartus II generated folders

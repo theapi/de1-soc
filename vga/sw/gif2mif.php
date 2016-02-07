@@ -15,24 +15,78 @@ $im = imagecreatefromgif($file);
 
 //echo 'Total colors in image: ' . imagecolorstotal($im) . "\n";
 
+
+$info = pathinfo($file);
+$filename = $info['filename'];
+$dir = $info['dirname'];
+
 // Create the colour index mif.
-for( $i = 0; $i < imagecolorstotal($im); $i++) {
-    $colour = imagecolorsforindex($im, $i);  //get color at index 'i' in the color table
-    var_dump($colour);
-    // @todo wrte to the mif
+$output_file = $dir . '/' . $filename . '_index.mif';
+if (!$fp = fopen($output_file, "w")) {
+    exit("unable to open output file: $output_file.\n");
 }
 
-// Create the image mif.
+$init = '
+WIDTH = 24;
+DEPTH = 256;
+
+ADDRESS_RADIX = UNS;
+DATA_RADIX = HEX;
+
+CONTENT BEGIN
+';
+write($fp, $init);
+
+for( $i = 0; $i < imagecolorstotal($im); $i++) {
+    $colour = imagecolorsforindex($im, $i);  //get color at index 'i' in the color table
+    $r = dechex($colour['red']);
+    $g = dechex($colour['green']);
+    $b = dechex($colour['blue']);
+    write($fp, "$i : $r$g$b;\n");
+}
+
+write($fp, "END;\n");
+fclose($fp);
+
+// Create the image data mif.
+$output_file = $dir . '/' . $filename . '_data.mif';
+if (!$fp = fopen($output_file, "w")) {
+    exit("unable to open output file: $output_file.\n");
+}
+
+// 800x480 screen
+$init = '
+WIDTH = 8;
+DEPTH = 384000;
+
+ADDRESS_RADIX = UNS;
+DATA_RADIX = HEX;
+
+CONTENT BEGIN
+';
+write($fp, $init);
+
 $width = imagesx($im);
 $height = imagesy($im);
+$i = 0;
 for ($x = 0; $x < $width; $x++) {
     for ($y = 0; $y < $height; $y++) {
-        $rgb = imagecolorat($im, $x, $y);
-          var_dump($rgb);
-        // @todo write to the mif
+        $val = imagecolorat($im, $x, $y);
+        write($fp, "$i : $val;\n");
+        $i++;
     }
 }
 
+if ($i < 384000) {
+    write($fp, '[' . $i . '..384000] : 000000;' . "\n");
+}
 
 // Free image
 imagedestroy($im);
+
+function write($fp, $data) {
+    //echo $data;
+    if (fwrite($fp, $data) === FALSE) {
+        exit("Unable to write to output file.\n");
+    }
+}
