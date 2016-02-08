@@ -33,17 +33,18 @@ foreach( $lines as $i => $line) {
 
     if ($begun) {
         $parts = explode(':', $line);
-        $i = hexdec(trim($parts[0]));
+        $h_i = trim($parts[0]);
         $hex = trim($parts[1], ' ;\t\n\r');
 
         // Swap the colours as the demo file is not RGB.
         //$colour = hexdec($hex[2] . $hex[3] . $hex[0] . $hex[1] . $hex[4] . $hex[5]);
         //$colour = hexdec($hex[4] . $hex[5] . $hex[0] . $hex[1] . $hex[2] . $hex[3]);
-        $colour = hexdec($hex[4] . $hex[5] . $hex[2] . $hex[3] . $hex[0] . $hex[1]);
+        //$colour = hexdec($hex[4] . $hex[5] . $hex[2] . $hex[3] . $hex[0] . $hex[1]);
 
-
+        $colour = hexdec($hex);
+        $i = hexdec($h_i);
         $index[$i] = $colour;
-        print "$i : $colour\n";
+        print "$h_i : $hex\n";
     }
 
     if ($line == 'CONTENT BEGIN') {
@@ -51,7 +52,8 @@ foreach( $lines as $i => $line) {
     }
 }
 
-$width = 640;
+//$width = 640;
+$width = 800;
 $height = 480;
 $x = 0;
 $y = 0;
@@ -76,7 +78,7 @@ foreach( $lines as $i => $line) {
         imagesetpixel($im, $x, $y, $colour);
 
         $x++;
-        if ($x == 640) {
+        if ($x == $width) {
             $x = 0;
             $y++;
         }
