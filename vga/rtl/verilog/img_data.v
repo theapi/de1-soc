@@ -15,8 +15,8 @@ module img_data (
 );
     
     (* ramstyle = "M10K" *)
-    reg [7:0] mem [383999:0] /* synthesis ram_init_file = "img_data_logo.mif" */;
-    //reg [7:0] mem [383999:0] /* synthesis ram_init_file = "heart_data.mif" */;
+    //reg [7:0] mem [383999:0] /* synthesis ram_init_file = "img_data_logo.mif" */;
+    reg [7:0] mem [383999:0] /* synthesis ram_init_file = "heart_data.mif" */;
     
     always @ (posedge clk) begin
         if (we)

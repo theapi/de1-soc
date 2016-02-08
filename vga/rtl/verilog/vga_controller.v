@@ -19,6 +19,7 @@ module vga_controller(
     wire [7:0] colour_index;
     wire [23:0] rgb;
     reg [18:0] img_read_address;
+    wire [31:0] next_pixel_addr;
 
     vga_sync_generator vga_sync(
         .reset(reset),
@@ -26,6 +27,7 @@ module vga_controller(
         .blank_n(blank_n),
         .next_pixel_h(pixel_h),
         .next_pixel_v(pixel_v),
+        .next_pixel_addr(next_pixel_addr),
         .HS(HS),
         .VS(VS)
     );
@@ -51,10 +53,12 @@ module vga_controller(
         .clk(sys_clk)
     );
     
+    
     always@(posedge vga_clk) begin
         img_read_address <= (pixel_v * 800) + pixel_h;
+        //img_read_address <= next_pixel_addr;
     end
-
+    
     
     assign red   = rgb[23:16];
     assign green = rgb[15:8];
