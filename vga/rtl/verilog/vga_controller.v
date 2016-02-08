@@ -36,9 +36,9 @@ module vga_controller(
     // Image data
     img_data img_data_inst (
         .q (colour_index),
-        .d(24'b0),
+        .d(8'b0),
         .read_address(img_read_address),
-        .write_address(8'b0),
+        .write_address(19'b0),
         .we(1'b0),
         .clk(sys_clk)
     );
@@ -46,7 +46,7 @@ module vga_controller(
     // Color table output
     img_index img_index_inst (
         .q (rgb),
-        .d(24'b0),
+        .d(8'b0),
         .read_address(colour_index),
         .write_address(8'b0),
         .we(1'b0),

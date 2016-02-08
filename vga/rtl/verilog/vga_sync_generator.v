@@ -69,9 +69,10 @@ module vga_sync_generator(
     wire h_sync;
     wire v_sync;
 
-    wire [32:0] vert_line;
-    wire [32:0] hori_line;
+    wire [31:0] vert_line;
+    wire [31:0] hori_line;
     
+    reg [31:0] current_addr;
 
 //=======================================================
 //  Structural coding
@@ -101,17 +102,17 @@ module vga_sync_generator(
     always@(posedge vga_clk, posedge reset) begin
         if (reset) begin
             next_pixel_h <= 11'd0;
-            next_pixel_addr <= 31'd0;
+            //next_pixel_addr <= 31'd0;
         end else if (h_cnt == 0) begin 
             next_pixel_h <= 11'd0;
         end else if (hori_valid) begin 
-        
+        /*
             if (next_pixel_v == 0) begin
                 next_pixel_addr <= 31'd0;
             end else begin
                 next_pixel_addr <= next_pixel_addr + 31'd1;
             end
-            
+        */  
             if (next_pixel_h == hori_visible) begin
                 next_pixel_h <= 11'd0;
             end else begin
@@ -134,6 +135,17 @@ module vga_sync_generator(
         end
     end
     
+    always@(posedge vga_clk) begin
+        if (blank_n && (next_pixel_h < hori_visible)) begin
+            current_addr <= current_addr + 32'd1;
+            next_pixel_addr <= next_pixel_addr + 32'd1;
+
+        end else if (v_cnt == 0) begin
+            current_addr <= 32'd0;
+            next_pixel_addr <= 32'd1;
+        end
+        
+    end
 
     // Sync pulses
     assign HS = (h_cnt < hori_sync) ? 1'b1 : 1'b0;
