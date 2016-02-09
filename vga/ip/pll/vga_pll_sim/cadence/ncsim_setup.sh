@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 15.1 185 linux 2016.01.31.15:37:39
+# ACDS 15.1 185 linux 2016.02.09.13:51:36
 
 # ----------------------------------------
 # ncsim - auto-generated simulation script
@@ -59,12 +59,12 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 15.1 185 linux 2016.01.31.15:37:39
+# ACDS 15.1 185 linux 2016.02.09.13:51:36
 # ----------------------------------------
 # initialize variables
 TOP_LEVEL_NAME="vga_pll"
 QSYS_SIMDIR="./../"
-QUARTUS_INSTALL_DIR="/home/peter/altera_lite/15.1/quartus/"
+QUARTUS_INSTALL_DIR="/home/peterc/altera_lite/15.1/quartus/"
 SKIP_FILE_COPY=0
 SKIP_DEV_COM=0
 SKIP_COM=0

@@ -5,7 +5,7 @@
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CSEMA5F31C6
 set_global_assignment -name TOP_LEVEL_ENTITY "DE1_SOC"
-set_global_assignment -name ORIGINAL_QUARTUS_VERSION "14.0"
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.0
 set_global_assignment -name LAST_QUARTUS_VERSION 15.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:43:19 JANUARY 30,2016"
 set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
@@ -136,6 +136,7 @@ set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -fall
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -rise
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -fall
 set_global_assignment -name ACTIVE_SERIAL_CLOCK FREQ_100MHZ
+set_global_assignment -name QIP_FILE ../ip/pll/vga_pll.qip
 set_global_assignment -name VERILOG_FILE ../rtl/verilog/vga_sync_generator.v
 set_global_assignment -name VERILOG_FILE ../rtl/verilog/vga_demo.v
 set_global_assignment -name VERILOG_FILE ../rtl/verilog/vga_controller.v
