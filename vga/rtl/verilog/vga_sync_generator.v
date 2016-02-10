@@ -151,9 +151,15 @@ module vga_sync_generator(
     assign HS = (h_cnt < hori_sync) ? 1'b1 : 1'b0;
     assign VS = (v_cnt < vert_sync) ? 1'b1 : 1'b0;
     
+    // debug
+    wire [31:0] hori_valid_min = hori_sync + hori_back;
+    wire [31:0] hori_valid_max = hori_sync + hori_back + hori_visible + 1;
+    wire [31:0] vert_valid_min = vert_sync + vert_back;
+    wire [31:0] vert_valid_max = vert_sync + vert_back + vert_visible + 1;
+    
     // Valid when not in the porches.
     assign hori_valid = (h_cnt > (hori_sync + hori_back) && h_cnt <= (hori_sync + hori_back + hori_visible + 1)) ? 1'b1 : 1'b0;
-    assign vert_valid = (v_cnt > (vert_sync + vert_back) && v_cnt <= (vert_sync + vert_back + vert_visible + 1)) ? 1'b1 : 1'b0; 
+    assign vert_valid = (v_cnt > (vert_sync + vert_back) && v_cnt <= (vert_sync + vert_back + vert_visible)) ? 1'b1 : 1'b0; 
     assign blank_n = !(!hori_valid || !vert_valid);
     
 
