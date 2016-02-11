@@ -2,6 +2,7 @@
 *.bak
 *.qws
 *.rpt
+*.jdi
 *.done
 *.summary
 *.sld
