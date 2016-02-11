@@ -5,6 +5,7 @@ module vga_controller_tb();
 
     // Declare inputs as regs and outputs as wires
     reg VGA_CLK;
+    reg sys_clk;
     reg RESET;
     wire [7:0] VGA_R;
     wire [7:0] VGA_G;
@@ -16,6 +17,7 @@ module vga_controller_tb();
     
     vga_controller vga_ins(
         .reset(RESET),
+        .sys_clk(sys_clk),
         .vga_clk(VGA_CLK),
         .blank_n(VGA_BLANK_N),
         .HS(VGA_HS),

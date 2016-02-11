@@ -15,13 +15,8 @@ add wave -noupdate /vga_controller_tb/vga_ins/vga_sync/vert_valid
 add wave -noupdate -radix unsigned /vga_controller_tb/vga_ins/vga_sync/h_cnt
 add wave -noupdate -radix unsigned /vga_controller_tb/vga_ins/vga_sync/v_cnt
 add wave -noupdate -radix unsigned /vga_controller_tb/vga_ins/vga_sync/next_pixel_addr
-add wave -noupdate -radix unsigned /vga_controller_tb/vga_ins/vga_sync/current_addr
-add wave -noupdate -radix unsigned /vga_controller_tb/vga_ins/vga_sync/hori_valid_max
-add wave -noupdate -radix unsigned /vga_controller_tb/vga_ins/vga_sync/hori_valid_min
-add wave -noupdate -radix unsigned /vga_controller_tb/vga_ins/vga_sync/vert_valid_max
-add wave -noupdate -radix unsigned /vga_controller_tb/vga_ins/vga_sync/vert_valid_min
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {10043870 ns} 0}
+WaveRestoreCursors {{Cursor 1} {10962090 ns} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 176
 configure wave -valuecolwidth 100
@@ -37,4 +32,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {10013090 ns} {10074650 ns}
+WaveRestoreZoom {10689440 ns} {11631520 ns}

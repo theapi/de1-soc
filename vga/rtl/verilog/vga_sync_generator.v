@@ -57,6 +57,8 @@ module vga_sync_generator(
     parameter vert_visible  = 480;
     parameter vert_back  = 31;
     parameter vert_front = 13;
+    
+    parameter visible_pixels = 38400; // hori_visible * vert_visible
 
 
 //=======================================================
@@ -72,7 +74,6 @@ module vga_sync_generator(
     wire [31:0] vert_line;
     wire [31:0] hori_line;
     
-    reg [31:0] current_addr;
 
 //=======================================================
 //  Structural coding
@@ -102,17 +103,9 @@ module vga_sync_generator(
     always@(posedge vga_clk, posedge reset) begin
         if (reset) begin
             next_pixel_h <= 11'd0;
-            //next_pixel_addr <= 31'd0;
         end else if (h_cnt == 0) begin 
             next_pixel_h <= 11'd0;
-        end else if (hori_valid) begin 
-        /*
-            if (next_pixel_v == 0) begin
-                next_pixel_addr <= 31'd0;
-            end else begin
-                next_pixel_addr <= next_pixel_addr + 31'd1;
-            end
-        */  
+        end else if (hori_valid && vert_valid) begin 
             if (next_pixel_h == hori_visible) begin
                 next_pixel_h <= 11'd0;
             end else begin
@@ -135,27 +128,19 @@ module vga_sync_generator(
         end
     end
     
-    always@(posedge vga_clk) begin
-        if (blank_n && (next_pixel_h < hori_visible)) begin
-            current_addr <= current_addr + 32'd1;
-            next_pixel_addr <= next_pixel_addr + 32'd1;
-
-        end else if (v_cnt == 0) begin
-            current_addr <= 32'd0;
+    always@(posedge vga_clk, posedge reset) begin
+        if (reset) begin
             next_pixel_addr <= 32'd1;
-        end
-        
+        end else if (next_pixel_addr == visible_pixels) begin
+            next_pixel_addr <= 32'd0;
+        end else if (blank_n && (next_pixel_h < hori_visible)) begin
+            next_pixel_addr <= next_pixel_addr + 32'd1;
+        end 
     end
 
     // Sync pulses
     assign HS = (h_cnt < hori_sync) ? 1'b1 : 1'b0;
     assign VS = (v_cnt < vert_sync) ? 1'b1 : 1'b0;
-    
-    // debug
-    wire [31:0] hori_valid_min = hori_sync + hori_back;
-    wire [31:0] hori_valid_max = hori_sync + hori_back + hori_visible + 1;
-    wire [31:0] vert_valid_min = vert_sync + vert_back;
-    wire [31:0] vert_valid_max = vert_sync + vert_back + vert_visible + 1;
     
     // Valid when not in the porches.
     assign hori_valid = (h_cnt > (hori_sync + hori_back) && h_cnt <= (hori_sync + hori_back + hori_visible + 1)) ? 1'b1 : 1'b0;

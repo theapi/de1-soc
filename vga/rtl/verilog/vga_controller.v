@@ -56,7 +56,7 @@ module vga_controller(
     
     always@(posedge vga_clk) begin
         //img_read_address <= (pixel_v * 800) + pixel_h;
-        img_read_address <= next_pixel_addr;
+        img_read_address <= next_pixel_addr[18:0];
     end
     
     
