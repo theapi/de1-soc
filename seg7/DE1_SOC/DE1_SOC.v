@@ -38,35 +38,47 @@ module DE1_SOC(
 
 );
 
-seven_segment seg0(
-    .val(4'h5),
-    .out(HEX0)
-);
+    // The BCD code generted from the binary input.
+    wire [11:0] bcd;
+    
+    // Read the first 8 switches as binary inputs.
+    bin2bcd bin2bcd(
+        .bin(SW[7:0]),
+        .bcd()
+    );
 
-seven_segment seg1(
-    .val(4'h4),
-    .out(HEX1)
-);
+    // Ones
+    seven_segment seg0(
+        .val(bcd[3:0]),
+        .out(HEX0)
+    );
 
-seven_segment seg2(
-    .val(4'h3),
-    .out(HEX2)
-);
+    // Tens
+    seven_segment seg1(
+        .val(bcd[7:4]),
+        .out(HEX1)
+    );
 
-seven_segment seg3(
-    .val(4'h2),
-    .out(HEX3)
-);
+    // Hundreds
+    seven_segment seg2(
+        .val(bcd[11:8]),
+        .out(HEX2)
+    );
 
-seven_segment seg4(
-    .val(4'h1),
-    .out(HEX4)
-);
+    seven_segment seg3(
+        .val(4'hf),
+        .out(HEX3)
+    );
 
-seven_segment seg5(
-    .val(4'hf),
-    .out(HEX5)
-);
+    seven_segment seg4(
+        .val(4'hf),
+        .out(HEX4)
+    );
+
+    seven_segment seg5(
+        .val(4'hf),
+        .out(HEX5)
+    );
 
 
 endmodule
