@@ -21,32 +21,75 @@ module DE1_SOC(
 	inout 		          		PS2_CLK,
 	inout 		          		PS2_CLK2,
 	inout 		          		PS2_DAT,
-	inout 		          		PS2_DAT2
+	inout 		          		PS2_DAT2,
+    
+
+    output      [6:0]  HEX0,
+    output      [6:0]  HEX1,
+    output      [6:0]  HEX2,
+    output      [6:0]  HEX3,
+    output      [6:0]  HEX4,
+    output      [6:0]  HEX5
 );
 
 
+    wire scan_ready;
+    wire [7:0] scan_code;
 
-//=======================================================
-//  REG/WIRE declarations
-//=======================================================
+    // The BCD code generated from the binary input.
+    wire [11:0] bcd;
+    
+    assign LEDR = scan_code;
+    
+    // Read the first 8 switches as binary inputs.
+    bin2bcd bin2bcd(
+        .bin(scan_code),
+        .bcd(bcd)
+    );
 
-wire scan_ready;
-wire [7:0] scan_code;
+    // Ones
+    seven_segment seg0(
+        .val(bcd[3:0]),
+        .out(HEX0)
+    );
 
-//=======================================================
-//  Structural coding
-//=======================================================
+    // Tens
+    seven_segment seg1(
+        .val(bcd[7:4]),
+        .out(HEX1)
+    );
 
-assign LEDR = scan_code;
+    // Hundreds
+    seven_segment seg2(
+        .val(bcd[11:8]),
+        .out(HEX2)
+    );
 
-ps2_controller keyboard (
-    .reset(!KEY[0]),
-    .clk(CLOCK_50),
-    .ps2_clock(PS2_CLK),
-    .ps2_data(PS2_DAT),
-    .scan_ready(scan_ready),
-    .scan_code(scan_code)
-);
+    seven_segment seg3(
+        .val(4'hf),
+        .out(HEX3)
+    );
+
+    seven_segment seg4(
+        .val(4'hf),
+        .out(HEX4)
+    );
+
+    seven_segment seg5(
+        .val(4'hf),
+        .out(HEX5)
+    );
+
+    
+
+    ps2_controller keyboard (
+        .reset(!KEY[0]),
+        .clk(CLOCK_50),
+        .ps2_clock(PS2_CLK),
+        .ps2_data(PS2_DAT),
+        .scan_ready(scan_ready),
+        .scan_code(scan_code)
+    );
 
 
 endmodule

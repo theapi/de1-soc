@@ -64,7 +64,6 @@ module ps2_controller (
                 end
             default: // 8 data bits, least significant bit first.
                 begin
-                    //r_scan_code <= {r_scan_code[6:0], ps2_data};
                     r_scan_code[state_reg - 1] <= ps2_data;
                     state_reg <= state_reg + 1'b1;
                     ready <= 1'b0;
