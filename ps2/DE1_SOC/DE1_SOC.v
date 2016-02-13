@@ -39,11 +39,29 @@ module DE1_SOC(
     // The BCD code generated from the binary input.
     wire [11:0] bcd;
     
+    wire [7:0] ascii_code;
+    
     assign LEDR = scan_code;
     
-    // Read the first 8 switches as binary inputs.
+    ps2_controller keyboard (
+        .reset(!KEY[0]),
+        .clk(CLOCK_50),
+        .ps2_clock(PS2_CLK),
+        .ps2_data(PS2_DAT),
+        .scan_ready(scan_ready),
+        .scan_code(scan_code)
+    );
+    
+    ascii ascii(
+        .clk(CLOCK_50),
+        .scan_ready(scan_ready),
+        .scan_code(scan_code),
+        .ascii(ascii_code)
+    );
+    
+    // Output the ASCII on the seven segment displays.
     bin2bcd bin2bcd(
-        .bin(scan_code),
+        .bin(ascii_code),
         .bcd(bcd)
     );
 
@@ -82,14 +100,7 @@ module DE1_SOC(
 
     
 
-    ps2_controller keyboard (
-        .reset(!KEY[0]),
-        .clk(CLOCK_50),
-        .ps2_clock(PS2_CLK),
-        .ps2_data(PS2_DAT),
-        .scan_ready(scan_ready),
-        .scan_code(scan_code)
-    );
+
 
 
 endmodule
