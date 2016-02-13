@@ -34,17 +34,21 @@ module DE1_SOC(
       output      [6:0]  HEX5,
 
       ///////// SW /////////
-      input       [9:0]  SW
+      input       [9:0]  SW,
+      
+      output      [9:0]  LEDR
 
 );
 
     // The BCD code generted from the binary input.
     wire [11:0] bcd;
     
+    assign LEDR = SW;
+    
     // Read the first 8 switches as binary inputs.
     bin2bcd bin2bcd(
         .bin(SW[7:0]),
-        .bcd()
+        .bcd(bcd)
     );
 
     // Ones
